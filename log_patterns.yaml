@@ -1,0 +1,65 @@
+Platform:
+  filePattern: platform.*\.log
+  lineFormat: >
+    (?:\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}\.\d{3} )?(?P<timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3}) - (?P<level>\w+) \d+ --- \[(?P<thread>[^\]]+)\] (?P<logger>[^:]+) ?: (?P<message>.*)
+  show:
+    - timestamp
+    - level
+    - logger
+    - message
+  patterns:
+    - regex: ERROR
+      highlightLine: true
+      color: rojo
+    - regex: WARN
+      highlightLine: true
+      color: amarillo
+
+Mongo:
+  filePattern: mongo.*\.log
+  lineFormat: >
+    (?:\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}\.\d{3} )?\{"t":\{"\$date":"(?P<timestamp>[^"]+)"\},"s":"(?P<level>[^"]+)","c":"(?P<component>[^"]+)","id":(?P<id>\d+),"ctx":"(?P<ctx>[^"]+)","msg":"(?P<message>.*?)".*\}
+  show:
+    - timestamp
+    - level
+    - message
+  patterns:
+    - regex: Exception
+      highlightLine: true
+      color: rojo
+    - regex: |
+        New state node: (?P<nodo>.*?) - (?P<contador>[0-9]{1,10})
+      highlightLine: false
+      groups:
+        nodo: amarillo
+        contador: verde
+
+ProxyRouter:
+  filePattern: proxy.*\.log
+  lineFormat: >
+    (?P<prefix_ts>\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}\.\d{3}) (?P<remote_ip>\d+\.\d+\.\d+\.\d+) - (?P<server>[^ ]+) \[(?P<timestamp>[^\]]+)\]\s+(?P<status>\d+) ReqTime:(?P<reqtime>[0-9.]+) "(?P<url>[^"]+)" "(?P<http>[^"]+)" (?P<size>\d+) "(?P<referrer>[^"]*)" "(?P<agent>[^"]*)" "(?P<xforwarded>[^"]*)"
+  show:
+    - timestamp
+    - status
+    - reqtime
+    - url
+  patterns:
+    - regex: \s5\d\d\s
+      highlightLine: true
+      color: rojo
+
+RabbitMQ:
+  filePattern: rabbit.*\.log
+  lineFormat: >
+    (?:\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}\.\d{3} )?(?P<timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d+(?:\+\d{2}:\d{2})?) \[(?P<level>[^\]]+)\] (?P<message>.*)
+  show:
+    - timestamp
+    - level
+    - message
+  patterns:
+    - regex: connection.*closed
+      highlightLine: true
+      color: amarillo
+    - regex: ERROR|CRITICAL
+      highlightLine: true
+      color: rojo
